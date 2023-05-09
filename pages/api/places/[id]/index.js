@@ -1,5 +1,4 @@
-import dbConnect from "../../../db/connect.js";
-import { places } from "../../../lib/db.js";
+import dbConnect from "../../../../db/connect";
 
 export default async function handler(request, response) {
   await dbConnect();

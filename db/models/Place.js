@@ -1,41 +1,15 @@
 import mongoose from "mongoose";
 
-const MONGODB_URI = process.env.MONGO_URI;
+const { Schema } = mongoose;
 
-if (!MONGODB_URI) {
-  throw new Error(
-    "Please define the MONGO_URI environment variable inside .env.local"
-  );
-}
+const placeSchema = new Schema({
+  name: { type: String, required: true },
+  location: { type: String, required: true },
+  image: { type: String, required: true },
+  mapURL: { type: String, required: true },
+  description: { type: String, required: true },
+});
 
-let cached = global.mongoose;
-if (!cached) {
-  cached = global.mongoose = { conn: null, promise: null };
-}
+const Place = mongoose.models.Place || mongoose.model("Place", placeSchema);
 
-async function dbConnect() {
-  if (cached.conn) {
-    return cached.conn;
-  }
-
-  if (!cached.promise) {
-    const opts = {
-      bufferCommands: false,
-    };
-
-    cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
-      return mongoose;
-    });
-  }
-
-  try {
-    cached.conn = await cached.promise;
-  } catch (e) {
-    cached.promise = null;
-    throw e;
-  }
-
-  return cached.conn;
-}
-
-export default dbConnect;
+export default Place;
